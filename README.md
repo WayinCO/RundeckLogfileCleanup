@@ -4,6 +4,7 @@ Python script to remove old Rundeck executions and log files
 The default properties file is properties.json and this must be in the same directory as the script. Otherwise, pass the full filepath of a properties file as the only argument to the script.
 The properties file has the format
 
+```json
 {
 	"RUNDECKSERVER": "rundeck server name or IP address",
 	"PORT": 4440,
@@ -15,8 +16,10 @@ The properties file has the format
 	"TIMEOUT": 60,
 	"DELETE_TIMEOUT": 1200,
 	"MAX_DELETE":5000,
+	"BATCH_SIZE": 50,
 	"VERBOSE": false
 }
+```
 
 You should put your own Rundeck server name and API key in the appropriate places. Choose how long you want to keep log files for with the MAXIMUM_DAYS variable, the default removes jobs after 90 days. The script completely removes the execution from the Rundeck database and the log file from disk - there's no going back once this is done!
 
@@ -27,3 +30,20 @@ If the job keeps timing out try setting a smaller PAGE_SIZE which will query job
 The script is tested and working on v2.4.0-1 "americano indigo briefcase" and 2.6.6 "cafe bonbon fuchsia phone".  Remember to configure the api version corresponding to your Rundeck version.
 
 I've tried on a v2.2 installation but the job execution format seems to be different.
+
+#Rundeck ACL Policy
+You will probably need to modify the `apitoken.aclpolicy` file in order to allow the admin
+API token to use the batch delete endpoint.
+
+You should add ‘delete_execution’ action in this way:
+```yaml
+context:
+  application: ‘rundeck’
+for:
+  project:
+    - match:
+        name: '.*'
+      allow: [delete_execution,read] # allow view and delete executions for all projects
+by:
+  group: api_token_group
+```
