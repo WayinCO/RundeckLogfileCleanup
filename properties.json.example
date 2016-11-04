@@ -9,5 +9,6 @@
 	"TIMEOUT": 60,
 	"DELETE_TIMEOUT": 1200,
 	"MAX_DELETE": 5000,
+	"BATCH_SIZE": 50,
 	"VERBOSE": false
 }

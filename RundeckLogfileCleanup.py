@@ -106,23 +106,29 @@ def delete_execution(execution_id):
         raise e
 
 
+# http://stackoverflow.com/a/434328/436190
+def chunker(seq, size):
+    return (seq[pos:pos + size] for pos in xrange(0, len(seq), size))
+
+
 #API call to bulk delete executions by ID
 def delete_executions(execution_ids):
     global PROPERTIES
     global HEADERS
     url = URL + 'executions/delete'
     try:
-        r = requests.post(
-            url,
-            headers=HEADERS,
-            data=json.dumps({
-                'ids': chunk
-            }),
-            verify=False,
-            timeout=PROPERTIES['DELETE_TIMEOUT'])
-        if PROPERTIES['VERBOSE']:
-            print "            Deleted execution ids {0}".format(execution_ids,
-                                                                 r.text, r)
+        for chunk in chunker(execution_ids, PROPERTIES['BATCH_SIZE']):
+            r = requests.post(
+                url,
+                headers=HEADERS,
+                data=json.dumps({
+                    'ids': chunk
+                }),
+                verify=False,
+                timeout=PROPERTIES['DELETE_TIMEOUT'])
+            if PROPERTIES['VERBOSE']:
+                print "            Deleted execution ids {0}".format(chunk,
+                                                                     r.text, r)
     except Exception as e:
         print "Problem with execution deletion"
         print e.message
