@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import xml.etree.ElementTree as ET
