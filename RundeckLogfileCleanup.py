@@ -165,9 +165,9 @@ if PROPERTIES['SSL']:
     # disable warnings about unverified https connections
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-URL = '{0}://{1}:{2}/rundeck/api/{3}/'.format(
+URL = '{0}://{1}:{2}{3}api/{4}/'.format(
     protocol, PROPERTIES['RUNDECKSERVER'], PROPERTIES['PORT'],
-    PROPERTIES['API_VERSION'])
+    PROPERTIES['URI_PATH'], PROPERTIES['API_VERSION'])
 HEADERS = {
     'Content-Type': 'application/json',
     'X-RunDeck-Auth-Token': PROPERTIES['API_KEY']
